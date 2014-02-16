@@ -8,6 +8,14 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var sessionStore = require('connect-mysql')(express),
+  options = {
+    config: {
+      user: 'root',
+      password: '',
+      database: 'session'
+    }
+  };
 
 var app = express();
 
@@ -21,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
-app.use(express.session());
+app.use(express.session({ secret: 'supersecretkeygoeshere', store: new sessionStore(options) }));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
